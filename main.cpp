@@ -1,89 +1,81 @@
-#include"defaultHeader.h"
+#include"IOCP.h"
 #include"RingBuffer.h"
+#include"Session.h"
 
-struct Test {
-	int age = 0;
-	char name[30]{};
-	int id = 0;
-};
-int main()
+IOCP server;
+vector<Session> sessions;
+int uniq_key = 1;
+
+void worker()
 {
-	RingBuffer ringBuffer;
+	HANDLE h_iocp = server.GetIocpHandle();
+	SOCKET l_socket = server.GetListenSocket();
 
-	while (1) {
-		switch (rand()%3)
-		{
-		case 0: {
-			Test t;
+	while (true) {
+		DWORD num_bytes;
+		ULONG_PTR ikey;
+		WSAOVERLAPPED* over;
 
-			for (int i = 0; i < rand() % 30; i++)
-				t.name[i] = 'a' + rand() % 26;
-			t.age = rand() % 100;
-			t.id = rand();
+		BOOL ret = GetQueuedCompletionStatus(h_iocp, &num_bytes, &ikey, &over, INFINITE);
 
-			int ret = ringBuffer.Enqueue((char*)&t, sizeof(t));
+		int key = static_cast<int>(ikey);
 
-			if (ret > 0) {
-				cout << "Enqueue ";
-
-				for (int i = 0; i < 30; ++i)
-					cout << t.name[i];
-				cout<< "\t" << t.id << "\t" << t.age;
-				cout << endl;
-				//cout << "Enqueue: " << str << endl;
+		if (FALSE == ret) {
+			if (SERVER_ID == key) {
+				DisplayError("GQCS : ", WSAGetLastError());
+				// exit(-1);
 			}
-			else if(ret == 0)
-				cout << "Enqueue zero data" << endl;
-			else if(ret == -1)
-				cout << "Enqueue err: overflow" << endl;
+			else {
+				DisplayError("GQCS : ", WSAGetLastError());
+				// disconnect
+			}
+		}
+		if ((key != SERVER_ID) && (0 == num_bytes)) {
+			// disconnect
+			continue;
+		}
+		EX_OVER* ex_over = reinterpret_cast<EX_OVER*>(over);
 
+		switch (ex_over->m_op) {
+		case OP_TYPE::OP_RECV: {
+			cout << "RECV - "<< num_bytes << endl;
+			sessions[key].RecvCompletion(num_bytes);
+			sessions[key].ProcessPacket();
+			sessions[key].Recv();
 			break;
 		}
-		case 1: {
-			//int str = 124;
-			Test t;
-			int ret = ringBuffer.Dequeue((char*)&t,sizeof(t));
+		case OP_TYPE::OP_SEND:
+			delete ex_over;
+			break;
+		case OP_TYPE::OP_ACCEPT: {
+			cout << "accept" << endl;
+			int c_id = uniq_key++;
+			cout << "new id :" << c_id << endl;
 
-			if (ret > 0) {
-				cout << "Dequeue ";
-
-
-				for (int i = 0; i < 30; ++i)
-					cout << t.name[i];
-				cout << "\t" << t.id << "\t" << t.age;
-				cout << endl;
-				//cout << "Dequeue: " << str << endl;
+			if (-1 != c_id) {
+				sessions[c_id].Accept(h_iocp, c_id, ex_over->m_csocket);
 			}
-			else if (ret == 0)
-				cout << "Dequeue zero data" << endl;
-			else if (ret == -1)
-				cout << "Dequeue err: empty" << endl;
-			else if (ret == -2)
-				cout << "Dequeue err: underflow" << endl;
+			else {
+				//CloseSocket;
+			}
 
+			memset(&ex_over->m_over, 0, sizeof(ex_over->m_over));
+			SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+			ex_over->m_csocket = c_socket;
+			AcceptEx(l_socket, c_socket, (char*)(ex_over->m_packetbuf.GetBuffer()), 0, 32, 32, NULL, &ex_over->m_over);
 			break;
 		}
-		case 2: {
-			Test t;
-
-			int ret = ringBuffer.Peek((char*)&t, sizeof(t));
-
-			if (ret > 0) {
-				cout << "Peek: ";
-				for (int i = 0; i < 30; ++i)
-					cout << t.name[i];
-				cout << "\t" << t.id << "\t" << t.age << endl;
-			}
-			else if (ret == 0)
-				cout << "Peek zero data" << endl;
-			else if (ret == -1)
-				cout << "Peek err: empty" << endl;
-			else if (ret == -2)
-				cout << "Peek err: Peek over" << endl;
-			break;
-		}
-		default:
-			break;
 		}
 	}
+}
+
+
+int main()
+{
+	sessions.resize(100);
+
+	server.Init();
+	server.StartAccept();
+	function<void()> func = worker;
+	server.StartIoThreads(func);
 }

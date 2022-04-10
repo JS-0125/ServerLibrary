@@ -1,21 +1,22 @@
 #pragma once
 #include"DefaultStruct.h"
+#include"Network.h"
 
-class ServerManager
+class IOCP: Network
 {
-	static HANDLE h_iocp;
+	HANDLE h_iocp;
 	SOCKADDR_IN m_serverAddr;
 	EX_OVER m_acceptOver;
 	SOCKET m_listenSocket;
 public:
-	ServerManager();
-	~ServerManager();
-	void Init();
+	IOCP() = default;
+	~IOCP();
+	int Init() override;
+	int StartAccept() override;
+	int Disconnect(SOCKET& socket) override;
 
+	int StartIoThreads(function<void()> func);
 	void PostQueued(int eventType, WSAOVERLAPPED& over);
-	bool Send(void* p, SOCKET& socket);
-	void Recv(SOCKET& socket, EX_OVER& ex_over, int prev_size);
-	void Disconnect(SOCKET& socket);
 	int TcpSetKeepAlive(int nSockFd_, int nKeepAlive_, int nKeepAliveIdle_, int nKeepAliveCnt_, int nKeepAliveInterval_)
 	{
 		int nRtn;
@@ -45,7 +46,7 @@ public:
 		}
 		return nRtn;
 	}
+	
 	HANDLE GetIocpHandle();
 	SOCKET GetListenSocket();
-	void DisplayError(const char* msg, int err_no);
 };
