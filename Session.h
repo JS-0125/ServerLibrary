@@ -12,9 +12,12 @@ public:
 	Session() {};
 	void SetSocket(SOCKET&);
 	void Accept(HANDLE, SOCKET);
-	int Send();
+	template<class T>
+	int Send(T*);
 	int Recv(EX_OVER_IO*);
 	void RecvCompletion(size_t, EX_OVER_IO*);
+	void SendCompletion(EX_OVER_IO*);
+
 	void ProcessPacket();
 
 	RingBuffer& GetRingBuffer();

@@ -27,12 +27,37 @@ SOCKET& Session::GetSocket()
 	return m_socket;
 }
 
+template<class T>
+int Session::Send(T* packet)
+{
+	auto p = (PacketHeader)*packet;
+	cout << (PACKET_TYPE)p.m_type << " - " << p.m_size << endl;
+
+	auto exoverIo = exoverIoPool.GetObj();
+
+	exoverIo->m_op = OP_TYPE::OP_SEND;
+
+	exoverIo->m_wsabuf[0].buf = reinterpret_cast<char*>(packet);
+	exoverIo->m_wsabuf[0].len = p.m_size;
+	memset(&(exoverIo->m_over), 0, sizeof(exoverIo->m_over));
+
+	LPDWORD sentBytes = 0;
+
+	int ret = WSASend(m_socket, exoverIo->m_wsabuf, 1, sentBytes, NULL, (LPWSAOVERLAPPED)exoverIo, NULL);
+	//cout << "sentBytes - " << (int)sentBytes << endl;
+
+	if (0 != ret) {
+		int err_no = WSAGetLastError();
+		if (WSA_IO_PENDING != err_no) {
+			DisplayError("WSASend : ", WSAGetLastError());
+			return -1;
+		}
+	}
+	return 0;
+}
+
 int Session::Recv(EX_OVER_IO* exoverIo)
 {
-	cout << "Recv" << endl;
-
-	//auto exoverIo = exoverIoPool.GetObj();
-	cout << exoverIoPool.GetObjectsCount() << endl;
 	exoverIo->m_op = OP_TYPE::OP_RECV;
 
 	exoverIo->m_sessionSPtr = shared_from_this();
@@ -43,16 +68,14 @@ int Session::Recv(EX_OVER_IO* exoverIo)
 	memset(&exoverIo->m_over, 0, sizeof(exoverIo->m_over));
 	DWORD r_flag = 0;
 
-
-	int ret = WSARecv(m_socket, exoverIo->m_wsabuf, 1,
-		NULL, &r_flag, (LPWSAOVERLAPPED)exoverIo, NULL);
+	int ret = WSARecv(m_socket, exoverIo->m_wsabuf, 1, NULL, &r_flag, (LPWSAOVERLAPPED)exoverIo, NULL);
 
 	if (0 != ret) {
 		int err_no = WSAGetLastError();
 		if (WSA_IO_PENDING != err_no)
 			DisplayError("WSARecv : ", WSAGetLastError());
+		return -1;
 	}
-
 	return 0;
 }
 
@@ -61,6 +84,12 @@ void Session::RecvCompletion(size_t len, EX_OVER_IO* exoverIo)
 	m_packetbuf.Commit(len);
 	ProcessPacket();
 	Recv(exoverIo);
+}
+
+void Session::SendCompletion( EX_OVER_IO* exoverIo)
+{
+	exoverIoPool.ReturnObj(exoverIo);
+	cout << exoverIoPool.GetObjectsCount() << endl;
 }
 
 void Session::ProcessPacket()

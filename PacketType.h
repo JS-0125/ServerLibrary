@@ -29,4 +29,14 @@ struct CSPacketChat : public PacketHeader {
 	char m_msg[MAX_MESSAGE]{};
 };
 
+struct SCPacketChat : public PacketHeader {
+	SCPacketChat(char* msg) {
+		m_size = sizeof(SCPacketChat);
+		m_type = (short)PACKET_TYPE::PACKET_SC_CHAT;
+		std::memcpy(m_msg, msg, sizeof(m_msg));
+	}
+	char m_msg[MAX_MESSAGE]{};
+};
+
+
 #pragma pack(pop)

@@ -27,4 +27,7 @@ PACKET_HANDLER(PACKET_CS_CHAT)
 	CSPacketChat packet;
 	sessionSP->GetPacket(packet);
 	cout << packet.m_msg << endl;
+
+	SCPacketChat sendPacket(packet.m_msg);
+	sessionSP->Send(&packet);
 }
