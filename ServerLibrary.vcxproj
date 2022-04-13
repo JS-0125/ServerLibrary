@@ -148,7 +148,9 @@
     <ClInclude Include="defaultHeader.h" />
     <ClInclude Include="DefaultStruct.h" />
     <ClInclude Include="Exception.h" />
+    <ClInclude Include="Ex_Over.h" />
     <ClInclude Include="Network.h" />
+    <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="PacketHandler.h" />
     <ClInclude Include="PacketType.h" />
     <ClInclude Include="RingBuffer.h" />

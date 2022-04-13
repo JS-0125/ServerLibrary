@@ -1,18 +1,20 @@
 #pragma once
-#include"DefaultStruct.h"
+#include"defaultHeader.h"
 #include"Network.h"
+#include"Ex_Over.h"
 
 class IOCP: Network
 {
 	HANDLE h_iocp;
 	SOCKADDR_IN m_serverAddr;
-	EX_OVER m_acceptOver;
+	EX_OVER_IO m_acceptOver;
 	SOCKET m_listenSocket;
 public:
 	IOCP() = default;
 	~IOCP();
 	int Init() override;
 	int StartAccept() override;
+	int StartAccept(int n);
 	int Disconnect(SOCKET& socket) override;
 
 	int StartIoThreads(function<void()> func);

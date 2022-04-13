@@ -1,5 +1,4 @@
 #include "RingBuffer.h"
-#include"defaultHeader.h"
 
 int RingBuffer::Enqueue(char* data, size_t size)
 {

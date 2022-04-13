@@ -1,4 +1,5 @@
 #include "IOCP.h"
+#include"Session.h"
 
 IOCP::~IOCP() {
 	closesocket(m_listenSocket);
@@ -43,20 +44,41 @@ int IOCP::Init()
 
 int IOCP::StartAccept()
 {
-	m_acceptOver.m_op = OP_TYPE::OP_ACCEPT;
+	m_acceptOver.m_sessionSPtr = make_shared<Session>();
 	memset(&m_acceptOver.m_over, 0, sizeof(m_acceptOver.m_over));
 	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
-	m_acceptOver.m_csocket = c_socket;
+	m_acceptOver.m_sessionSPtr->SetSocket(c_socket);
+	m_acceptOver.m_op = OP_TYPE::OP_ACCEPT;
 
 	BOOL ret = AcceptEx(m_listenSocket, c_socket,
-		(char*)(m_acceptOver.m_packetbuf.GetBuffer()), 0, 32, 32, NULL, &m_acceptOver.m_over);
+		(char*)(m_acceptOver.m_sessionSPtr->GetRingBuffer().GetBuffer())
+		, 0, 32, 32, NULL, (LPWSAOVERLAPPED)&m_acceptOver);
 
 	if (0 == ret) {
 		int err_num = WSAGetLastError();
 		if (err_num != WSA_IO_PENDING)
 			return DisplayError("AcceptEx Error", err_num);
 	}
-	cout << "accept" << endl;
+	return 0;
+}
+
+
+int IOCP::StartAccept(int n)
+{
+	memset(&m_acceptOver.m_over, 0, sizeof(m_acceptOver.m_over));
+	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	m_acceptOver.m_sessionSPtr->SetSocket(c_socket);
+	m_acceptOver.m_op = OP_TYPE::OP_ACCEPT;
+
+	BOOL ret = AcceptEx(m_listenSocket, c_socket,
+		(char*)(m_acceptOver.m_sessionSPtr->GetRingBuffer().GetBuffer())
+		, 0, 32, 32, NULL, (LPWSAOVERLAPPED)&m_acceptOver);
+
+	if (0 == ret) {
+		int err_num = WSAGetLastError();
+		if (err_num != WSA_IO_PENDING)
+			return DisplayError("AcceptEx Error", err_num);
+	}
 	return 0;
 }
 

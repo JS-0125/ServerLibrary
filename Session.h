@@ -1,23 +1,25 @@
 #pragma once
-#include"DefaultStruct.h"
+#include"defaultHeader.h"
+#include"RingBuffer.h"
+#include"Ex_Over.h"
 
-
-class Session : public std::enable_shared_from_this<Session>
+class Session : public enable_shared_from_this<Session>
 {
 private:
-	EX_OVER m_exover;
-	SOCKET m_socket;
-
-	void SetSocket(SOCKET&);
+	RingBuffer		m_packetbuf{};
+	SOCKET			m_socket{};
 public:
-	void Accept(HANDLE, int, SOCKET);
+	Session() {};
+	void SetSocket(SOCKET&);
+	void Accept(HANDLE, SOCKET);
 	int Send();
-	int Recv();
-	void RecvCompletion(size_t);
+	int Recv(EX_OVER_IO*);
+	void RecvCompletion(size_t, EX_OVER_IO*);
 	void ProcessPacket();
 
+	RingBuffer& GetRingBuffer();
 	SOCKET& GetSocket();
+
 	template<class T>
 	void GetPacket(T&);
 };
-
