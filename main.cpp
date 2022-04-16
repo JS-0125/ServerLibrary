@@ -21,6 +21,7 @@ void worker()
 			cout << "RECV - "<< num_bytes << endl;
 			auto sessionSPtr = ex_over->m_sessionSPtr;
 			sessionSPtr->RecvCompletion(num_bytes, ex_over);
+			cout << "RECV -  use count - " << sessionSPtr.use_count() << endl;
 			break;
 		}
 		case OP_TYPE::OP_SEND: {

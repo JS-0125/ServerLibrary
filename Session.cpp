@@ -1,6 +1,7 @@
 #include "Session.h"
-#include"PacketType.h"
 #include"PacketHandler.h"
+
+ObjectPool<EX_OVER_IO> exoverIoPool(10);
 
 void Session::Accept(HANDLE h_iocp, SOCKET socket)
 {
@@ -8,6 +9,11 @@ void Session::Accept(HANDLE h_iocp, SOCKET socket)
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_socket), h_iocp, (ULONG_PTR)this, 0);
 	EX_OVER_IO* ex_overIo = exoverIoPool.GetObj();
 	Recv(ex_overIo);
+}
+
+void Session::Disconnect(EX_OVER_IO* exoverIo)
+{
+	exoverIoPool.ReturnObj(exoverIo);
 }
 
 void Session::SetSocket(SOCKET& socket)
@@ -27,34 +33,7 @@ SOCKET& Session::GetSocket()
 	return m_socket;
 }
 
-template<class T>
-int Session::Send(T* packet)
-{
-	auto p = (PacketHeader)*packet;
-	cout << (PACKET_TYPE)p.m_type << " - " << p.m_size << endl;
 
-	auto exoverIo = exoverIoPool.GetObj();
-
-	exoverIo->m_op = OP_TYPE::OP_SEND;
-
-	exoverIo->m_wsabuf[0].buf = reinterpret_cast<char*>(packet);
-	exoverIo->m_wsabuf[0].len = p.m_size;
-	memset(&(exoverIo->m_over), 0, sizeof(exoverIo->m_over));
-
-	LPDWORD sentBytes = 0;
-
-	int ret = WSASend(m_socket, exoverIo->m_wsabuf, 1, sentBytes, NULL, (LPWSAOVERLAPPED)exoverIo, NULL);
-	//cout << "sentBytes - " << (int)sentBytes << endl;
-
-	if (0 != ret) {
-		int err_no = WSAGetLastError();
-		if (WSA_IO_PENDING != err_no) {
-			DisplayError("WSASend : ", WSAGetLastError());
-			return -1;
-		}
-	}
-	return 0;
-}
 
 int Session::Recv(EX_OVER_IO* exoverIo)
 {
@@ -72,9 +51,10 @@ int Session::Recv(EX_OVER_IO* exoverIo)
 
 	if (0 != ret) {
 		int err_no = WSAGetLastError();
-		if (WSA_IO_PENDING != err_no)
+		if (WSA_IO_PENDING != err_no) {
 			DisplayError("WSARecv : ", WSAGetLastError());
-		return -1;
+			return -1;
+		}
 	}
 	return 0;
 }
@@ -83,13 +63,14 @@ void Session::RecvCompletion(size_t len, EX_OVER_IO* exoverIo)
 {
 	m_packetbuf.Commit(len);
 	ProcessPacket();
-	Recv(exoverIo);
+	if (Recv(exoverIo) < 0)
+		Disconnect(exoverIo);
+	cout << "RecvCompletion use count - " << exoverIo->m_sessionSPtr.use_count() << endl;
 }
 
 void Session::SendCompletion( EX_OVER_IO* exoverIo)
 {
 	exoverIoPool.ReturnObj(exoverIo);
-	cout << exoverIoPool.GetObjectsCount() << endl;
 }
 
 void Session::ProcessPacket()
@@ -101,10 +82,4 @@ void Session::ProcessPacket()
 
 	auto session = shared_from_this();
 	packetHandlerTable[(int)(header.m_type)](session);
-}
-
-template<class T>
-void Session::GetPacket(T& packet)
-{
-	m_packetbuf.Dequeue((char*)&packet, sizeof(packet));
 }

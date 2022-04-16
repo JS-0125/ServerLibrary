@@ -139,23 +139,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MasterManager.cpp" />
+    <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MatchManager.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="IOCP.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Session.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defaultHeader.h" />
-    <ClInclude Include="DefaultStruct.h" />
+    <ClInclude Include="protocol.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Ex_Over.h" />
+    <ClInclude Include="MatchManager.h" />
+    <ClInclude Include="LoginManager.h" />
+    <ClInclude Include="MasterManager.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="PacketHandler.h" />
     <ClInclude Include="PacketType.h" />
     <ClInclude Include="RingBuffer.h" />
     <ClInclude Include="IOCP.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="Session.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerEvent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

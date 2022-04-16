@@ -1,5 +1,6 @@
 #pragma once
 #include"defaultHeader.h"
+#include"protocol.h"
 
 class RingBuffer
 {

@@ -9,10 +9,12 @@ class ObjectPool
 {
 private:
 	Concurrency::concurrent_queue<T*> m_objects;
-	int m_poolSize;
+	int m_poolSize = 0;
 public:
+	ObjectPool() = default;
 	ObjectPool(int);
 	~ObjectPool();
+	void Init(int);
 	T* GetObj();
 	void ReturnObj(T*);
 	int GetPoolSize();
@@ -30,6 +32,8 @@ ObjectPool<T>::ObjectPool(int poolSize)
 template<class T>
 ObjectPool<T>::~ObjectPool()
 {
+	if (m_poolSize == 0)
+		return;
 	T* tmpObj;
 	for (int i = 0; i < m_poolSize; ++i) {
 		m_objects.try_pop(tmpObj);
@@ -38,17 +42,27 @@ ObjectPool<T>::~ObjectPool()
 }
 
 template<class T>
-inline T* ObjectPool<T>::GetObj()
+void ObjectPool<T>::Init(int poolSize)
+{
+	m_poolSize = poolSize;
+	for (int i = 0; i < m_poolSize; ++i)
+		m_objects.push(new T);
+}
+
+template<class T>
+T* ObjectPool<T>::GetObj()
 {
 	T* tmpObj;
-	if (m_objects.try_pop(tmpObj)) 
+	if (m_objects.try_pop(tmpObj)) {
+		std::cout << "m_objects - " << m_objects.unsafe_size() << std::endl;
 		return tmpObj;
+	}
 
 	return nullptr;
 }
 
 template<class T>
-inline void ObjectPool<T>::ReturnObj(T* obj)
+void ObjectPool<T>::ReturnObj(T* obj)
 {
 	obj->Reset();
 	m_objects.push(obj);
@@ -56,13 +70,13 @@ inline void ObjectPool<T>::ReturnObj(T* obj)
 }
 
 template<class T>
-inline int ObjectPool<T>::GetPoolSize()
+int ObjectPool<T>::GetPoolSize()
 {
 	return m_poolSize;
 }
 
 template<class T>
-inline int ObjectPool<T>::GetObjectsCount()
+int ObjectPool<T>::GetObjectsCount()
 {
 	return m_objects.unsafe_size();
 }

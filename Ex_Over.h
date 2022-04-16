@@ -20,5 +20,3 @@ public:
 		m_sessionSPtr = nullptr;
 	};
 };
-
-static ObjectPool<EX_OVER_IO> exoverIoPool(10);
