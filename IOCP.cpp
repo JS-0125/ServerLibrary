@@ -14,7 +14,7 @@ int IOCP::Init()
 
 	wcout.imbue(locale("korean"));
 	h_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
-	m_listenSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	m_listenSocket = WSASocketW(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_listenSocket), h_iocp, SERVER_ID, 0);
 
@@ -47,7 +47,7 @@ int IOCP::StartAccept()
 {
 	m_acceptOver.m_sessionSPtr = make_shared<Session>();
 	memset(&m_acceptOver.m_over, 0, sizeof(m_acceptOver.m_over));
-	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	SOCKET c_socket = WSASocketW(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	m_acceptOver.m_sessionSPtr->SetSocket(c_socket);
 	m_acceptOver.m_op = OP_TYPE::OP_ACCEPT;
 
@@ -67,7 +67,7 @@ int IOCP::StartAccept()
 int IOCP::StartAccept(int n)
 {
 	memset(&m_acceptOver.m_over, 0, sizeof(m_acceptOver.m_over));
-	SOCKET c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	SOCKET c_socket = WSASocketW(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	m_acceptOver.m_sessionSPtr->SetSocket(c_socket);
 	m_acceptOver.m_op = OP_TYPE::OP_ACCEPT;
 

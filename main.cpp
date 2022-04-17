@@ -1,7 +1,11 @@
+#define HAVE_STRUCT_TIMESPEC
+
 #include"IOCP.h"
 #include"Session.h"
+#include"MySQLDataBase.h"
 
 IOCP server;
+MySQLDataBase database;
 
 void worker()
 {

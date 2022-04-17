@@ -22,19 +22,7 @@ static SetPacketTable _setPacketTable_##x(x, Packet_Handler_##x); \
 static void Packet_Handler_##x(shared_ptr<Session> sessionSP)
 
 
-PACKET_HANDLER(PACKET_CS_CHAT)
-{
-	cout << "PACKET_CS_CHAT" << endl;
-	CSPacketChat recvPacket;
-	sessionSP->GetPacket(recvPacket);
 
-	// Broadcast
-	SCPacketChat sendPacket;
-	memcpy(sendPacket.m_msg, recvPacket.m_msg, sizeof(sendPacket.m_msg));
-	memcpy(sendPacket.m_ownerId, recvPacket.m_ownerId, sizeof(sendPacket.m_ownerId));
-	cout << recvPacket.m_roomName<< " - " << sendPacket.m_ownerId << ": " << sendPacket.m_msg << endl;
-	masterManager.matchManager.Broadcast(recvPacket.m_roomName, &sendPacket);
-}
 
 PACKET_HANDLER(PACKET_CS_LOGIN)
 {
@@ -67,4 +55,18 @@ PACKET_HANDLER(PACKET_CS_ENTER_ROOM)
 	sessionSP->GetPacket(recvPacket);
 
 	masterManager.matchManager.EnterRoom(recvPacket.m_roomName, recvPacket.m_id, sessionSP);
+}
+
+PACKET_HANDLER(PACKET_CS_CHAT)
+{
+	cout << "PACKET_CS_CHAT" << endl;
+	CSPacketChat recvPacket;
+	sessionSP->GetPacket(recvPacket);
+
+	// Broadcast
+	SCPacketChat sendPacket;
+	memcpy(sendPacket.m_msg, recvPacket.m_msg, sizeof(sendPacket.m_msg));
+	memcpy(sendPacket.m_ownerId, recvPacket.m_ownerId, sizeof(sendPacket.m_ownerId));
+	cout << recvPacket.m_roomName << " - " << sendPacket.m_ownerId << ": " << sendPacket.m_msg << endl;
+	masterManager.matchManager.Broadcast(recvPacket.m_roomName, &sendPacket);
 }
