@@ -59,9 +59,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Exception.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectPool.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -112,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="MySQLDatabase.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>NetworkLibrary</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

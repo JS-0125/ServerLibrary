@@ -33,8 +33,6 @@ SOCKET& Session::GetSocket()
 	return m_socket;
 }
 
-
-
 int Session::Recv(EX_OVER_IO* exoverIo)
 {
 	exoverIo->m_op = OP_TYPE::OP_RECV;

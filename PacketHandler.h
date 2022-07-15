@@ -22,8 +22,6 @@ static SetPacketTable _setPacketTable_##x(x, Packet_Handler_##x); \
 static void Packet_Handler_##x(shared_ptr<Session> sessionSP)
 
 
-
-
 PACKET_HANDLER(PACKET_CS_LOGIN)
 {
 	cout << "PACKET_CS_LOGIN" << endl;
