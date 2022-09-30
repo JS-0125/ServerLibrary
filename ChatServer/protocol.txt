@@ -1,0 +1,20 @@
+packet CS_NONE
+packet SC_NONE
+
+packet 	CS_LOGIN
+packet 	SC_LOGIN_RESULT
+
+packet 	SC_ROOM_LIST
+packet 	SC_ROOM_CHANGE
+
+packet 	CS_CREATE_ROOM
+packet 	SC_CREATE_ROOM_RESULT
+
+packet 	CS_ENTER_ROOM
+packet 	SC_ENTER_ROOM_RESULT
+
+packet 	CS_EXIT_ROOM
+packet 	SC_EXIT_ROOM_OK
+
+packet 	CS_CHAT
+packet 	SC_CHAT

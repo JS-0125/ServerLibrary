@@ -5,7 +5,7 @@
 
 #pragma pack(push, 1)
 
-// struct + packet header ÀÚµ¿È­
+// struct + packet header
 // Login Packet----------------------------------------
 
 struct STRUCT_CS_LOGIN : public PacketHeader {
@@ -121,4 +121,28 @@ struct STRUCT_SC_CHAT : public PacketHeader {
 	char m_ownerId[MAX_ID]{};
 };
 
+#pragma pack(pop)
+#pragma pack(push, 1)
+struct STRUCT_CS_NONE : public PacketHeader{
+	STRUCT_CS_NONE() {
+		m_size = sizeof(CS_NONE);
+		m_type = (short)PACKET_TYPE::CS_NONE;
+	}
+};
+#pragma pack(pop)
+#pragma pack(push, 1)
+struct STRUCT_SC_NONE : public PacketHeader{
+	STRUCT_SC_NONE() {
+		m_size = sizeof(SC_NONE);
+		m_type = (short)PACKET_TYPE::SC_NONE;
+	}
+};
+#pragma pack(pop)
+#pragma pack(push, 1)
+struct STRUCT_SC_ENTER_ROOM_RESULT : public PacketHeader{
+	STRUCT_SC_ENTER_ROOM_RESULT() {
+		m_size = sizeof(SC_ENTER_ROOM_RESULT);
+		m_type = (short)PACKET_TYPE::SC_ENTER_ROOM_RESULT;
+	}
+};
 #pragma pack(pop)

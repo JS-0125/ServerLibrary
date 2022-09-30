@@ -43,7 +43,7 @@
     <ClInclude Include="Room.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="temp.txt" />
+    <Text Include="protocol.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -61,7 +61,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="temp.txt">
+    <Text Include="protocol.txt">
       <Filter>Protocol</Filter>
     </Text>
   </ItemGroup>
