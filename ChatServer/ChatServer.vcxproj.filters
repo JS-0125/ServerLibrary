@@ -60,4 +60,9 @@
       <Filter>PacketHandling</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="temp.txt">
+      <Filter>Protocol</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

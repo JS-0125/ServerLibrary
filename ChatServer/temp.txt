@@ -1,0 +1,10 @@
+packet CS_LOGIN
+{
+	char id;
+}
+
+packet SC_LOGIN_OK
+{
+	char id;
+	bool result;
+}
