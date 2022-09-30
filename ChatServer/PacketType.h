@@ -1,0 +1,31 @@
+#pragma once
+#include"pch.h"
+
+// parse
+enum PACKET_TYPE
+{
+	CS_NONE,
+	SC_NONE,
+
+	// Login
+	CS_LOGIN,
+	SC_LOGIN_RESULT,
+
+	// Room
+	SC_ROOM_LIST,
+
+	SC_ROOM_CHANGE,
+
+	CS_CREATE_ROOM,
+	SC_CREATE_ROOM_RESULT,
+
+	CS_ENTER_ROOM,
+	SC_ENTER_ROOM_RESULT,
+
+	CS_EXIT_ROOM,
+	SC_EXIT_ROOM_OK,
+
+	// Chat
+	CS_CHAT,
+	SC_CHAT,
+};

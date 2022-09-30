@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{87a7cca8-463d-47c3-8f6c-29856e35ea31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PacketHandling">
+      <UniqueIdentifier>{c26ae686-a51d-4552-b488-63a3649ee488}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DummyClient.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ChatServer\PacketHandler.h">
+      <Filter>PacketHandling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ChatServer\PacketStructs.h">
+      <Filter>PacketHandling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ChatServer\PacketType.h">
+      <Filter>PacketHandling</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketMacro.h">
+      <Filter>PacketHandling</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
