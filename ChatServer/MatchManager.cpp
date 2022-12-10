@@ -7,7 +7,10 @@
 #include"PacketMacro.h"
 
 
-bool MatchManager::CreateRoom(){}
+bool MatchManager::CreateRoom(){
+    cout << "CreateRoom : no name"  << endl;
+    return false;
+}
 
 bool MatchManager::CreateRoom(char* roomName, shared_ptr<Session> sessionSP)
 {
@@ -78,6 +81,11 @@ void MatchManager::SendRoomList(shared_ptr<Session> sessionSP)
     //for (int i = 0; i < m_rooms.size(); ++i)
         //memcpy(roomListPacket.m_roomNames[i], m_rooms[i].c_str(), sizeof(roomListPacket.m_roomNames[i]));
     sessionSP->Send(&roomListPacket);
+}
+
+char** MatchManager::GetRoomNameList()
+{
+    return nullptr;
 }
 
 //char** MatchManager::GetRoomNameList()

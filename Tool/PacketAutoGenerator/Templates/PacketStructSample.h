@@ -8,7 +8,5 @@ struct STRUCT_{{packet.name}} : public PacketHeader{
 	}
 };
 #pragma pack(pop)
-
 	{%- endif %}
-
 {%- endfor %}

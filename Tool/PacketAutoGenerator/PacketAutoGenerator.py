@@ -4,7 +4,7 @@ import Parser
 
 def main():
     
-    # jinja2 템플릿 엔진
+    # jinja2 
     file_loader = jinja2.FileSystemLoader('Templates')
     env = jinja2.Environment(loader = file_loader)
 
@@ -16,7 +16,6 @@ def main():
     argParser.add_argument('--send', type = str, default ='SC_',help ='send prefix')
     arguments = argParser.parse_args();
 
-    # PacketType
     parser = Parser.Parser(1000, arguments.recv, arguments.send)
     parser.parsePacket(arguments.path)
 

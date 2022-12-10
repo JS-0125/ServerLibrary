@@ -4,3 +4,4 @@
 #define MAX_BUFFER  1024
 #define SERVER_PORT	49152
 #define MAX_PACKET_TYPE 1024
+#define SERVER_ADDR "172.30.1.45"
