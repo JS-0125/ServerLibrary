@@ -1,6 +1,7 @@
 #pragma once
 #include"MatchManager.h"
 #include"LoginManager.h"
+#include"EventQueue.h"
 
 class MasterManager
 {

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EventQueue.cpp" />
     <ClCompile Include="LoginManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MasterManager.cpp" />
@@ -33,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DummyClient\PacketMacro.h" />
+    <ClInclude Include="EventQueue.h" />
     <ClInclude Include="LoginManager.h" />
     <ClInclude Include="MasterManager.h" />
     <ClInclude Include="MatchManager.h" />

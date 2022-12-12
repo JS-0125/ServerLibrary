@@ -30,3 +30,8 @@ void ClientSession::Connect()
 		}
 	}
 }
+
+SOCKET ClientSession::GetSocket()
+{
+	return session->GetSocket();
+}

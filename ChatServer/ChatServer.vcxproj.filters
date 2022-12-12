@@ -30,6 +30,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="EventQueue.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoginManager.h">
@@ -58,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="PacketType.h">
       <Filter>PacketHandling</Filter>
+    </ClInclude>
+    <ClInclude Include="EventQueue.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

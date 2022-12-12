@@ -17,8 +17,12 @@ static void Packet_Handler_##x(shared_ptr<Session>); \
 static SetPacketTable _setPacketTable_##x(x, Packet_Handler_##x); \
 static void Packet_Handler_##x(shared_ptr<Session> sessionSP)
 
+
+extern thread_local EventQueue eventQueue;
+
 // packet handler
 // Examples
+
 PACKET_HANDLER( CS_LOGIN )
 {
 	cout << "PACKET: CS_LOGIN" << endl;
@@ -31,7 +35,7 @@ PACKET_HANDLER( CS_LOGIN )
 		masterManager.matchManager.SendRoomList(sessionSP);
 }
 
-PACKET_HANDLER( CS_CREATE_ROOM )
+PACKET_HANDLER(CS_CREATE_ROOM)
 {
 	cout << "PACKET: CS_CREATE_ROOM" << endl;
 	STRUCT_CS_CREATE_ROOM recvPacket;
@@ -43,7 +47,7 @@ PACKET_HANDLER( CS_CREATE_ROOM )
 		masterManager.matchManager.SendRoomList(sessionSP); // room list re-send
 }
 
-PACKET_HANDLER( CS_ENTER_ROOM )
+PACKET_HANDLER(CS_ENTER_ROOM)
 {
 	cout << "PACKET: CS_ENTER_ROOM" << endl;
 	STRUCT_CS_ENTER_ROOM recvPacket;
@@ -52,7 +56,7 @@ PACKET_HANDLER( CS_ENTER_ROOM )
 	masterManager.matchManager.EnterRoom(recvPacket.m_roomName, recvPacket.m_id, sessionSP);
 }
 
-PACKET_HANDLER( CS_CHAT )
+PACKET_HANDLER(CS_CHAT)
 {
 	cout << "PACKET: CS_CHAT" << endl;
 	STRUCT_CS_CHAT recvPacket;
@@ -67,70 +71,76 @@ PACKET_HANDLER( CS_CHAT )
 }
 
 
-PACKET_HANDLER( CS_NONE )
+PACKET_HANDLER(CS_NONE)
 {
-	cout << "PACKET: CS_NONE" << endl;
+	//cout << "PACKET: CS_NONE" << endl;
 	STRUCT_CS_NONE recvPacket;
 	sessionSP->GetPacket(recvPacket);
+
+	eventQueue.Enqueue(sessionSP);
+
+	if (eventQueue.Count() > 100) {
+		cout << "thid_thread: " << this_thread::get_id() << " - " << eventQueue.Count() << endl;
+	}
 }
 
-PACKET_HANDLER( SC_NONE )
+PACKET_HANDLER(SC_NONE)
 {
 	cout << "PACKET: SC_NONE" << endl;
 	STRUCT_SC_NONE recvPacket;
 	sessionSP->GetPacket(recvPacket);
 }
 
-PACKET_HANDLER( SC_LOGIN_RESULT )
+PACKET_HANDLER(SC_LOGIN_RESULT)
 {
 	cout << "PACKET: SC_LOGIN_RESULT" << endl;
 	STRUCT_SC_LOGIN_RESULT recvPacket;
 	sessionSP->GetPacket(recvPacket);
 }
 
-PACKET_HANDLER( SC_ROOM_LIST )
+PACKET_HANDLER(SC_ROOM_LIST)
 {
 	cout << "PACKET: SC_ROOM_LIST" << endl;
 	STRUCT_SC_ROOM_LIST recvPacket;
 	sessionSP->GetPacket(recvPacket);
 }
 
-PACKET_HANDLER( SC_ROOM_CHANGE )
+PACKET_HANDLER(SC_ROOM_CHANGE)
 {
 	cout << "PACKET: SC_ROOM_CHANGE" << endl;
 	STRUCT_SC_ROOM_CHANGE recvPacket;
 	sessionSP->GetPacket(recvPacket);
 }
 
-PACKET_HANDLER( SC_CREATE_ROOM_RESULT )
+PACKET_HANDLER(SC_CREATE_ROOM_RESULT)
 {
 	cout << "PACKET: SC_CREATE_ROOM_RESULT" << endl;
 	STRUCT_SC_CREATE_ROOM_RESULT recvPacket;
 	sessionSP->GetPacket(recvPacket);
 }
 
-PACKET_HANDLER( SC_ENTER_ROOM_RESULT )
+PACKET_HANDLER(SC_ENTER_ROOM_RESULT)
 {
 	cout << "PACKET: SC_ENTER_ROOM_RESULT" << endl;
 	STRUCT_SC_ENTER_ROOM_RESULT recvPacket;
 	sessionSP->GetPacket(recvPacket);
 }
 
-PACKET_HANDLER( CS_EXIT_ROOM )
+PACKET_HANDLER(CS_EXIT_ROOM)
 {
 	cout << "PACKET: CS_EXIT_ROOM" << endl;
 	STRUCT_CS_EXIT_ROOM recvPacket;
 	sessionSP->GetPacket(recvPacket);
 }
 
-PACKET_HANDLER( SC_EXIT_ROOM_OK )
+PACKET_HANDLER(SC_EXIT_ROOM_OK)
 {
 	cout << "PACKET: SC_EXIT_ROOM_OK" << endl;
 	STRUCT_SC_EXIT_ROOM_OK recvPacket;
 	sessionSP->GetPacket(recvPacket);
 }
 
-PACKET_HANDLER( SC_CHAT )
+PACKET_HANDLER(SC_CHAT)
 {
 	cout << "PACKET: SC_CHAT" << endl;
 	STRUCT_SC_CHAT recvPacket;

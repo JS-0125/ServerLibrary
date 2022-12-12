@@ -12,6 +12,7 @@ private:
 public:
 	ClientSession();
 	void Connect();
+	SOCKET GetSocket();
 };
 
 

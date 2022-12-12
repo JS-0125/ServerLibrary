@@ -63,7 +63,7 @@ void Session::RecvCompletion(size_t len, EX_OVER_IO* exoverIo)
 	ProcessPacket();
 	if (Recv(exoverIo) < 0)
 		Disconnect(exoverIo);
-	cout << "RecvCompletion use count - " << exoverIo->m_sessionSPtr.use_count() << endl;
+	//cout << "RecvCompletion use count - " << exoverIo->m_sessionSPtr.use_count() << endl;
 }
 
 void Session::SendCompletion( EX_OVER_IO* exoverIo)
